@@ -55,7 +55,7 @@ def get_winver():
         sp = wv.service_pack_major or 0
     else:
         import re
-        r = re.search("\s\d$", wv.service_pack)
+        r = re.search(r"\s\d$", wv.service_pack)
         sp = int(r.group(0)) if r else 0
     return (wv.major, wv.minor, sp)
 

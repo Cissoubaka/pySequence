@@ -36,7 +36,7 @@
 module lien
 ***********
 """
-import os, sys, subprocess
+import os, sys, subprocess, webbrowser
 import wx
 import re
 from util_path import toFileEncoding, toSystemEncoding, SYSTEM_ENCODING
@@ -53,13 +53,19 @@ SSCALE = 1.0
 if sys.platform == 'darwin':
     def openFolder(path):
         subprocess.check_call(['open', '--', path])
-elif sys.platform == 'linux2':
+    def openFile(path):
+        subprocess.check_call(['open', '--', path])
+elif sys.platform == 'linux' or sys.platform.startswith('linux'):
     def openFolder(path):
         subprocess.check_call(['xdg-open', '--', path])
+    def openFile(path):
+        subprocess.check_call(['xdg-open', path])
 elif sys.platform == 'win32':
     def openFolder(path):
 #         subprocess.Popen(["explorer", path], shell=True)
         subprocess.call(['explorer', path.encode(sys.getfilesystemencoding())], shell=True)
+    def openFile(path):
+        os.startfile(path)
 
 
 ####################################################################################
@@ -134,7 +140,7 @@ class Lien():
         if self.type == "f":
             if os.path.exists(path):
                 try:
-                    os.startfile(path)
+                    openFile(path)
                 except:
                     messageErreur(None, "Ouverture impossible",
                                   "Impossible d'ouvrir le fichier\n\n%s\n" %toSystemEncoding(path))

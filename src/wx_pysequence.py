@@ -442,7 +442,7 @@ class IpcServer(threading.Thread):
         # Setup TCP socket
         self.socket.bind(('127.0.0.1', port))
         self.socket.listen(5)
-        self.setDaemon(True)
+        self.daemon = True
 
 
 

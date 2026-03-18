@@ -172,7 +172,7 @@ class Grammaire():
         return mot[:mot.find("(")]
         
     def getFormeSP(self, mot):
-        f = re.search('\(([^)]+)', mot)
+        f = re.search(r'\(([^)]+)', mot)
         if f is None:
             return ["", ""]
         l = f.group(1).split('-')
@@ -393,7 +393,8 @@ def rallonge(txt):
 ######################################################################################  
 def sublist(sub, lst):
     l = [e for e in sub if e in lst]
-    return len(l) == len(sub)
+    return len(l) == len(sub)
+
 
 ######################################################################################  
 def pourCent(v, ajuster = False):
@@ -2818,7 +2819,7 @@ def rognerImage(image, wf = 800.0 , hf = 600.0):
     w, h = image.GetSize()
 #     print "   ", w, h
     r = max(w/float(wf), h/float(hf), 1)
-    _w, _h = w/r, h/r
+    _w, _h = int(w/r), int(h/r)
 #     print "   >>", _w, _h
     return image.ConvertToImage().Scale(_w, _h).ConvertToBitmap()
 

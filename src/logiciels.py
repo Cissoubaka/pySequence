@@ -130,16 +130,37 @@ class Logiciel():
             
             
 def charger_logiciels():
-    fichier = open(os.path.join(util_path.APP_DATA_PATH_USER, FICHIER_LOGICIELS),'r', encoding='utf-8')
-    parser = ET.XMLParser(encoding="utf-8")
-    root = ET.parse(fichier, parser = parser).getroot()
-    fichier.close()
-    LOGICIELS = []
-    for l in root:
-        lo = Logiciel()
-        lo.setBranche(l)
-        LOGICIELS.append(lo)
-    return LOGICIELS
+    fichier_path = os.path.join(util_path.APP_DATA_PATH_USER, FICHIER_LOGICIELS)
+    
+    # Si le fichier n'existe pas, créer un fichier vide avec une structure XML de base
+    if not os.path.exists(fichier_path):
+        try:
+            # Créer le répertoire s'il n'existe pas
+            if not os.path.exists(util_path.APP_DATA_PATH_USER):
+                os.makedirs(util_path.APP_DATA_PATH_USER)
+            
+            # Créer un fichier XML vide avec une structure de base
+            root = ET.Element('logiciels')
+            tree = ET.ElementTree(root)
+            tree.write(fichier_path, encoding='utf-8', xml_declaration=True)
+        except:
+            # Si la création échoue, retourner une liste vide
+            return []
+    
+    try:
+        fichier = open(fichier_path, 'r', encoding='utf-8')
+        parser = ET.XMLParser(encoding="utf-8")
+        root = ET.parse(fichier, parser = parser).getroot()
+        fichier.close()
+        LOGICIELS = []
+        for l in root:
+            lo = Logiciel()
+            lo.setBranche(l)
+            LOGICIELS.append(lo)
+        return LOGICIELS
+    except:
+        # En cas d'erreur de parsing, retourner une liste vide
+        return []
 
 
 def charger_images(logiciels):

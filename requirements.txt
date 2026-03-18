@@ -1,0 +1,28 @@
+# pySéquence - Dépendances Python
+# 
+# Installation:
+#   pip install -r requirements.txt
+
+# Interface graphique
+wxPython>=4.0
+
+# Templates et génération HTML
+Jinja2>=2.11
+
+# Parsing HTML/XML et Markdown
+beautifulsoup4>=4.4.1
+lxml
+markdown
+
+# Conversion PDF et fichiers
+PyMuPDF>=1.16  # Pour les imports PDF (fitz)
+xhtml2pdf>=0.2.15  # Pour la génération PDF
+
+# Presse-papier
+pyperclip>=1.8.0
+
+# Validation et sanitization des chemins de fichiers
+pathvalidate>=0.5.0
+
+# Optionnel sur Windows
+# pywin32>=220  # Pour les imports d'Excel (Windows uniquement)

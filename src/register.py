@@ -39,9 +39,16 @@ Enregistrement de pySéquence dans la base de registre (Windows)
 
 (Des)Activation du mode protégé d'Adobe Reader
 
+Note: Ce module ne fonctionne que sur Windows. Sur Linux/macOS, 
+le registrage se fait par d'autres mécanismes (fichiers .desktop, etc)
 """
 
-import winreg, os
+import os
+import sys
+
+# Importer winreg seulement sur Windows
+if sys.platform == 'win32':
+    import winreg
 
 EXT_FICHIER_SEQ = ".seq"
 TYPE_FICHIER_SEQ = "Fiche de Séquence Pédagogique"
@@ -55,6 +62,12 @@ ICON_PRJ = "fichier_prj.ico"
 
 
 def Register(PATH):
+    """Enregistrement des types de fichiers dans le registre Windows"""
+    # Cette fonction ne fonctionne que sur Windows
+    if sys.platform != 'win32':
+        print("L'enregistrement des fichiers n'est pas nécessaire sur cette plateforme")
+        return True
+    
     try:
         app = "\""+os.path.join(PATH, "Sequence.exe")+"\" \"%1\""
         # Clefs relatives aux "séquences"
@@ -90,6 +103,7 @@ def Register(PATH):
         key_ico = winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, KEY_TYPE_PRJ+"\\DefaultIcon")#, 0, _winreg.KEY_NOTIFY)
         winreg.SetValueEx(key_ico, '', 0, winreg.REG_SZ, icone)
         winreg.CloseKey(key_ico)
+        
         
         key_typ = winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, KEY_TYPE_PRJ)#, 0, _winreg.KEY_NOTIFY)
         winreg.SetValueEx(key_typ, '', 0, winreg.REG_SZ, TYPE_FICHIER_PRJ)

@@ -64,7 +64,7 @@ import os
 import locale
 import wx
 import wx.stc
-import imp
+import importlib
 
 # Assume MacPorts install of Enchant
 if wx.Platform == '__WXMAC__':
@@ -301,7 +301,7 @@ class STCSpellCheck(object):
                 os.environ['PYENCHANT_LIBRARY_PATH'] = libpath
 
             if cls.isEnchantOk():
-                imp.reload(enchant)
+                importlib.reload(enchant)
             else:
                 mod = __import__('enchant', globals(), locals())
                 globals()['enchant'] = mod
@@ -922,7 +922,7 @@ class RTCSpellCheck(object):
                 os.environ['PYENCHANT_LIBRARY_PATH'] = libpath
 
             if cls.isEnchantOk():
-                imp.reload(enchant)
+                importlib.reload(enchant)
             else:
                 mod = __import__('enchant', globals(), locals())
                 globals()['enchant'] = mod

@@ -39,8 +39,7 @@ Gestion des dossiers
 """
 
 import os, sys
-import imp
-
+import importlib
 
 
 DEBUG = False
@@ -52,7 +51,7 @@ DEBUG = False
 if hasattr(sys, 'setdefaultencoding'):
     sys.setdefaultencoding('utf8')
 else:
-    imp.reload(sys)  # Reload does the trick!
+    importlib.reload(sys)  # Reload does the trick!
     if hasattr(sys, 'setdefaultencoding'):
         sys.setdefaultencoding('utf-8')
 
@@ -135,24 +134,29 @@ if sys.platform == 'win32':
 else:
     INSTALL_PATH = None
     import subprocess
-    #import standardpaths
-    #import version
     
-    #standardpaths.configure(application_name="pySequence", organization_name=version.__author__)
-    #datalocation = standardpaths.Location.app_local_data.value
-    
-    #datalocation = standardpaths.get_writable_path('app_local_data')
-    #datalocation = standardpaths.get_writable_path(standardpaths.Location.app_local_data)
-    
-    
-    datalocation = os.getenv('APPDATA')
-    if datalocation != None:
-        datalocation = os.path.join(datalocation, "pySequence")
-        if not os.path.exists(datalocation):
-            subprocess.call("mkdir -p %s" %datalocation, shell=True)
-        APP_DATA_PATH = datalocation
+    # Déterminer le dossier utilisateur pour les données d'application
+    # Sur Linux/macOS: $HOME/.local/share/pySequence
+    # Sur Windows: $APPDATA/pySequence
+    if sys.platform == 'darwin':  # macOS
+        datalocation = os.path.expanduser("~/Library/Application Support/pySequence")
+    elif sys.platform == 'linux':
+        # Utiliser l'emplacement XDG si disponible, sinon $HOME/.config/pySequence
+        xdg_data = os.getenv('XDG_DATA_HOME')
+        if xdg_data:
+            datalocation = os.path.join(xdg_data, "pySequence")
+        else:
+            datalocation = os.path.expanduser("~/.local/share/pySequence")
     else:
-        APP_DATA_PATH = PATH
+        # Fallback pour autres systèmes
+        datalocation = os.path.expanduser("~/.pySequence")
+    
+    if not os.path.exists(datalocation):
+        try:
+            os.makedirs(datalocation)
+        except:
+            datalocation = PATH
+    APP_DATA_PATH = datalocation
         
 
 
@@ -164,15 +168,14 @@ if DEBUG:
 
 
 
-# execution du pySequence "installé"
-if INSTALL_PATH is not None and INSTALL_PATH == PATH:
+# execution du pySequence "installé" (Windows uniquement)
+if INSTALL_PATH is not None and INSTALL_PATH == PATH and sys.platform == 'win32':
     APP_DATA_PATH_USER = os.path.join(os.getenv('APPDATA'), 'pySequence')
     if not os.path.isdir(APP_DATA_PATH_USER):
         os.mkdir(APP_DATA_PATH_USER)
 # execution du pySequence "portable"
 else:
-    APP_DATA_PATH = PATH
-    APP_DATA_PATH_USER = PATH
+    APP_DATA_PATH_USER = APP_DATA_PATH
 
 
 def samefile(path1, path2):
